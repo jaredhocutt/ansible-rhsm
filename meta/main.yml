@@ -1,0 +1,27 @@
+galaxy_info:
+  role_name: rhsm
+
+  author: Jared Hocutt (@jaredhocutt)
+  description: >-
+    This role handles subscribing a Red Hat Enterprise Linux (RHEL) host to Red
+    Hat Subscription Manager (RHSM) and then enabling the desired repositories.
+
+    In the case that the RHEL host is running in AWS, the role will disable the
+    AWS plugins for RHSM and disable the RHUI repositories.
+
+  license: MIT
+
+  min_ansible_version: 2.8
+
+  platforms:
+    - name: EL
+      versions:
+        - 7
+
+  galaxy_tags:
+    - rhsm
+    - redhat
+    - subscription
+    - system
+
+dependencies: []

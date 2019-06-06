@@ -1,0 +1,4 @@
+---
+# vars file for rhsm
+
+rhsm_repositories: []

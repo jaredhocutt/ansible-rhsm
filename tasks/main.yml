@@ -1,0 +1,34 @@
+---
+# tasks file for rhsm_subscribe
+
+- name: Check if this is an EC2 instance
+  uri:
+    url: http://169.254.169.254/latest/meta-data/ami-id
+    timeout: 2
+  failed_when: no
+  register: rhsm_check_ec2_instance
+
+- include_tasks: aws.yml
+  when: rhsm_check_ec2_instance.status == 200
+
+- name: Register host to RHSM and attach pool
+  redhat_subscription:
+    username: "{{ rhsm_username }}"
+    password: "{{ rhsm_password }}"
+    pool: "{{ rhsm_pool | default(omit) }}"
+    pool_ids: "{{ rhsm_pool_ids | default(omit) }}"
+    org_id: "{{ rhsm_org_id | default(omit) }}"
+    activationkey: "{{ rhsm_activation_key | default(omit) }}"
+    consumer_name: "{{ rhsm_consumer_name | default(omit) }}"
+    consumer_type: "{{ rhsm_consumer_type | default(omit) }}"
+    state: present
+  become: yes
+  retries: 3  # This seems to fail sometimes, so lets retry before failing everything
+
+- name: Enable repositories
+  rhsm_repository:
+    name: "{{ rhsm_repositories }}"
+    purge: "{{ rhsm_purge_repositories | default(omit) }}"
+    state: enabled
+  become: yes
+  retries: 3  # This seems to fail sometimes, so lets retry before failing everything

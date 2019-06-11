@@ -27,3 +27,17 @@
     name: choose_repo
     enabled: no
   become: yes
+
+- name: Find RHUI repositories
+  find:
+    paths: /etc/yum.repos.d
+    patterns:
+      - "*rhui*.repo"
+      - "*rhui*.conf"
+  become: yes
+  register: rhsm_find_rhui_repos
+
+- name: Disable RHUI repositories
+  command: mv "{{ item.path }}" "{{ item.path }}.bak"
+  loop: "{{ rhsm_find_rhui_repos.files }}"
+  become: yes
